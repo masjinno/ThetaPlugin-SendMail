@@ -17,7 +17,10 @@
 package com.theta360.pluginapplication;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+
+import com.theta360.pluginapplication.model.MailLogic;
 import com.theta360.pluginapplication.task.TakePictureTask;
 import com.theta360.pluginapplication.task.TakePictureTask.Callback;
 import com.theta360.pluginlibrary.activity.PluginActivity;
@@ -25,6 +28,9 @@ import com.theta360.pluginlibrary.callback.KeyCallback;
 import com.theta360.pluginlibrary.receiver.KeyReceiver;
 import com.theta360.pluginlibrary.values.LedColor;
 import com.theta360.pluginlibrary.values.LedTarget;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends PluginActivity {
     private TakePictureTask.Callback mTakePictureTaskCallback = new Callback() {
@@ -48,7 +54,13 @@ public class MainActivity extends PluginActivity {
                      * To take a static picture, use the takePicture method.
                      * You can receive a fileUrl of the static picture in the callback.
                      */
-                    new TakePictureTask(mTakePictureTaskCallback).execute();
+                    //new TakePictureTask(mTakePictureTaskCallback).execute();
+
+                    Log.d("SendMail", "key down");
+                    ExecutorService execService = Executors.newSingleThreadExecutor();
+                    MailLogic mailLogic = new MailLogic();
+                    execService.submit(mailLogic::send);
+                    Log.d("SendMail", "key down fin");
                 }
             }
 
@@ -64,7 +76,8 @@ public class MainActivity extends PluginActivity {
 
             @Override
             public void onKeyLongPress(int keyCode, KeyEvent event) {
-                notificationError("");
+                Log.d("SendMail", "key long pressed. fin.");
+                notificationSuccess();
             }
         });
     }
